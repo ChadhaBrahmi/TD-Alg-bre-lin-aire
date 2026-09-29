@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Sous-Groupe — Algèbre linéaire</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      min-height: 100vh;
+
+      background:
+        radial-gradient(
+          circle at 15% 10%,
+          rgba(99, 102, 241, .18),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 85% 85%,
+          rgba(139, 92, 246, .15),
+          transparent 30%
+        ),
+        #09090b;
+
+      color: white;
+
+      padding: 50px 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+
+      padding: 7px 13px;
+
+      border-radius: 999px;
+
+      background: rgba(255,255,255,.05);
+
+      border: 1px solid
+        rgba(255,255,255,.09);
+
+      color: #a1a1aa;
+
+      font-size: 12px;
+
+      margin-bottom: 18px;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+
+      border-radius: 50%;
+
+      background: #4ade80;
+
+      box-shadow:
+        0 0 10px #4ade80;
+    }
+
+    h1 {
+      font-size:
+        clamp(42px, 7vw, 70px);
+
+      letter-spacing: -3px;
+
+      line-height: 1;
+
+      margin-bottom: 16px;
+    }
+
+    .description {
+      max-width: 620px;
+
+      margin: auto;
+
+      color: #a1a1aa;
+
+      font-size: 16px;
+
+      line-height: 1.7;
+    }
+
+    .groups {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 20px;
+    }
+
+    .group {
+      padding: 24px;
+
+      border-radius: 22px;
+
+      background:
+        rgba(24,24,27,.72);
+
+      border: 1px solid
+        rgba(255,255,255,.08);
+
+      backdrop-filter: blur(18px);
+
+      box-shadow:
+        0 20px 60px
+        rgba(0,0,0,.2);
+
+      transition: .25s ease;
+    }
+
+    .group:hover {
+      transform: translateY(-3px);
+
+      border-color:
+        rgba(255,255,255,.15);
+    }
+
+    .group:last-child {
+      grid-column: span 2;
+
+      width: min(100%, 540px);
+
+      justify-self: center;
+    }
+
+    .group-header {
+      display: flex;
+
+      align-items: center;
+
+      justify-content:
+        space-between;
+
+      margin-bottom: 18px;
+    }
+
+    .group-title {
+      font-size: 20px;
+
+      font-weight: 650;
+    }
+
+    .counter {
+      padding: 6px 10px;
+
+      border-radius: 999px;
+
+      background:
+        rgba(255,255,255,.05);
+
+      color: #a1a1aa;
+
+      font-size: 12px;
+    }
+
+    .slots {
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 9px;
+    }
+
+    .slot {
+      display: flex;
+
+      align-items: center;
+
+      gap: 11px;
+
+      min-height: 56px;
+
+      padding: 8px 10px;
+
+      border-radius: 13px;
+
+      border: 1px solid
+        rgba(255,255,255,.07);
+
+      background:
+        rgba(255,255,255,.025);
+
+      transition: .2s ease;
+    }
+
+    .slot:hover {
+      background:
+        rgba(255,255,255,.045);
+    }
+
+    .slot-number {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      width: 31px;
+      height: 31px;
+
+      flex-shrink: 0;
+
+      border-radius: 9px;
+
+      background:
+        rgba(255,255,255,.06);
+
+      color: #a1a1aa;
+
+      font-size: 12px;
+
+      font-weight: 600;
+    }
+
+    .name-input {
+      flex: 1;
+
+      min-width: 0;
+
+      border: none;
+
+      outline: none;
+
+      background: transparent;
+
+      color: white;
+
+      font-size: 14px;
+    }
+
+    .name-input::placeholder {
+      color: #52525b;
+    }
+
+    .slot-button {
+      border: none;
+
+      padding: 9px 13px;
+
+      border-radius: 9px;
+
+      background: white;
+
+      color: #09090b;
+
+      font-size: 12px;
+
+      font-weight: 650;
+
+      cursor: pointer;
+
+      transition: .2s;
+    }
+
+    .slot-button:hover {
+      transform: translateY(-1px);
+      opacity: .9;
+    }
+
+    .slot-button:disabled {
+      cursor: default;
+      opacity: .35;
+      transform: none;
+    }
+
+    .slot.taken {
+      border-color:
+        rgba(74,222,128,.18);
+
+      background:
+        rgba(74,222,128,.035);
+    }
+
+    .slot.taken .slot-number {
+      background:
+        rgba(74,222,128,.1);
+
+      color: #86efac;
+    }
+
+    .slot.taken .name-input {
+      color: #e4e4e7;
+      font-weight: 550;
+      cursor: default;
+    }
+
+    .status {
+      min-height: 25px;
+
+      margin-top: 27px;
+
+      text-align: center;
+
+      color: #a1a1aa;
+
+      font-size: 13px;
+    }
+
+    .loading {
+      color: #818cf8;
+    }
+
+    .success {
+      color: #86efac;
+    }
+
+    .error {
+      color: #fca5a5;
+    }
+
+    .footer {
+      text-align: center;
+
+      margin-top: 35px;
+
+      color: #52525b;
+
+      font-size: 11px;
+    }
+
+    @media (max-width: 700px) {
+
+      body {
+        padding: 30px 14px;
+      }
+
+      .groups {
+        grid-template-columns: 1fr;
+      }
+
+      .group:last-child {
+        grid-column: span 1;
+      }
+
+      .group {
+        padding: 18px;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+
+      .slot-button {
+        padding: 8px 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <header class="header">
+
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Algèbre linéaire · TD
+      </div>
+
+      <h1>Sous-Groupe</h1>
+
+      <p class="description">
+        Inscrivez-vous dans votre sous-groupe pour les TD
+        d’algèbre linéaire.
+      </p>
+
+    </header>
+
+
+    <section
+      class="groups"
+      id="groups">
+    </section>
+
+
+    <div
+      class="status"
+      id="status">
+    </div>
+
+
+    <div class="footer">
+      Les places sont enregistrées automatiquement.
+    </div>
+
+  </main>
+
+
+  
+
+  <iframe
+    name="submitFrame"
+    id="submitFrame"
+    style="display:none">
+  </iframe>
+
+
+  <form
+    id="submitForm"
+    method="POST"
+    target="submitFrame"
+    style="display:none">
+
+    <input
+      type="hidden"
+      name="group"
+      id="formGroup"
+    >
+
+    <input
+      type="hidden"
+      name="slot"
+      id="formSlot"
+    >
+
+    <input
+      type="hidden"
+      name="name"
+      id="formName"
+    >
+
+  </form>
+
+<script>
+
+const API_URL =
+  "https://script.google.com/macros/s/AKfycby-ob-usDJsPCBusvnc5flUwS5gGdZMlsO3aT9IZLDnnysf1XtxcJSmLLr8bfGbZ5oQYg/exec";
+
+const groupsContainer =
+  document.getElementById("groups");
+
+const status =
+  document.getElementById("status");
+
+const submitForm =
+  document.getElementById("submitForm");
+
+const formGroup =
+  document.getElementById("formGroup");
+
+const formSlot =
+  document.getElementById("formSlot");
+
+const formName =
+  document.getElementById("formName");
+
+let currentData = [];
+
+let pendingReservation = null;
+
+let isTyping = false;
+
+
+function showStatus(message, type = "") {
+
+  status.textContent = message;
+
+  status.className =
+    "status " + type;
+
+}
+
+
+window.receiveGroups = function(data) {
+
+  if (!data || !data.success) {
+
+    showStatus(
+      "Impossible de charger les groupes.",
+      "error"
+    );
+
+    return;
+  }
+
+  currentData = data.groups;
+
+  
+
+  if (!isTyping && !pendingReservation) {
+    createGroups(data.groups);
+  }
+
+
+
+  if (pendingReservation) {
+
+    const group =
+      data.groups[
+        pendingReservation.groupIndex
+      ];
+
+    const name =
+      group &&
+      group.slots[
+        pendingReservation.slotIndex
+      ];
+
+
+    if (name) {
+
+      pendingReservation = null;
+
+      isTyping = false;
+
+      createGroups(data.groups);
+
+      showStatus(
+        "✓ Votre place a été enregistrée.",
+        "success"
+      );
+
+
+      setTimeout(() => {
+        showStatus("");
+      }, 2500);
+
+    }
+
+  }
+
+};
+
+
+
+
+function loadGroups() {
+
+  if (isTyping || pendingReservation) {
+    return;
+  }
+
+
+  const oldScript =
+    document.getElementById("groupsScript");
+
+  if (oldScript) {
+    oldScript.remove();
+  }
+
+
+  const script =
+    document.createElement("script");
+
+
+  script.id =
+    "groupsScript";
+
+
+  script.src =
+    API_URL +
+    "?callback=receiveGroups&t=" +
+    Date.now();
+
+
+  script.onerror = () => {
+
+    showStatus(
+      "Impossible de contacter le serveur.",
+      "error"
+    );
+
+  };
+
+
+  document.body.appendChild(script);
+
+}
+
+
+
+function createGroups(data) {
+
+  groupsContainer.innerHTML = "";
+
+  currentData = data;
+
+
+  data.forEach((group, groupIndex) => {
+
+    const card =
+      document.createElement("div");
+
+    card.className = "group";
+
+
+    const takenCount =
+      group.slots.filter(
+        name => name
+      ).length;
+
+
+    card.innerHTML = `
+
+      <div class="group-header">
+
+        <div class="group-title">
+          ${escapeHtml(group.name)}
+        </div>
+
+        <div
+          class="counter"
+          id="counter-${groupIndex}">
+          ${takenCount} / 6
+        </div>
+
+      </div>
+
+      <div
+        class="slots"
+        id="slots-${groupIndex}">
+      </div>
+
+    `;
+
+
+    groupsContainer.appendChild(card);
+
+
+    const slots =
+      document.getElementById(
+        `slots-${groupIndex}`
+      );
+
+
+    group.slots.forEach(
+      (name, slotIndex) => {
+
+        const slot =
+          document.createElement("div");
+
+
+        slot.className =
+          "slot" +
+          (name ? " taken" : "");
+
+
+        const number =
+          document.createElement("div");
+
+
+        number.className =
+          "slot-number";
+
+
+        number.textContent =
+          slotIndex + 1;
+
+
+        const input =
+          document.createElement("input");
+
+
+        input.className =
+          "name-input";
+
+
+        input.type =
+          "text";
+
+
+        input.maxLength =
+          60;
+
+
+        input.placeholder =
+          "Entrez votre nom...";
+
+
+        input.value =
+          name || "";
+
+
+       
+
+        input.addEventListener(
+          "focus",
+          () => {
+
+            if (!name) {
+              isTyping = true;
+            }
+
+          }
+        );
+
+
+        input.addEventListener(
+          "input",
+          () => {
+
+            if (!name) {
+              isTyping = true;
+            }
+
+          }
+        );
+
+
+       
+
+        input.addEventListener(
+          "blur",
+          () => {
+
+            if (!input.value.trim()) {
+              isTyping = false;
+            }
+
+          }
+        );
+
+
+        const button =
+          document.createElement("button");
+
+
+        button.className =
+          "slot-button";
+
+
+        button.textContent =
+          name
+            ? "Pris"
+            : "S'inscrire";
+
+
+        if (name) {
+
+          input.disabled =
+            true;
+
+          button.disabled =
+            true;
+
+        }
+
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            reserveSlot(
+              groupIndex,
+              slotIndex,
+              input,
+              button
+            );
+
+          }
+        );
+
+
+        slot.appendChild(number);
+
+        slot.appendChild(input);
+
+        slot.appendChild(button);
+
+        slots.appendChild(slot);
+
+      }
+    );
+
+  });
+
+}
+
+function reserveSlot(
+  groupIndex,
+  slotIndex,
+  input,
+  button
+) {
+
+  const name =
+    input.value.trim();
+
+
+  if (!name) {
+
+    showStatus(
+      "Veuillez entrer votre nom.",
+      "error"
+    );
+
+    input.focus();
+
+    return;
+
+  }
+
+
+  
+
+  pendingReservation = {
+
+    groupIndex:
+      groupIndex,
+
+    slotIndex:
+      slotIndex
+
+  };
+
+
+
+
+  isTyping = false;
+
+
+ 
+
+  input.disabled =
+    true;
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "...";
+
+
+  showStatus(
+    "Enregistrement...",
+    "loading"
+  );
+
+
+  
+
+  formGroup.value =
+    currentData[groupIndex].name;
+
+  formSlot.value =
+    slotIndex + 1;
+
+  formName.value =
+    name;
+
+
+  submitForm.action =
+    API_URL;
+
+
+  submitForm.submit();
+
+
+  
+  setTimeout(() => {
+
+    loadGroups();
+
+  }, 1500);
+
+}
+
+
+function escapeHtml(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    text;
+
+  return div.innerHTML;
+
+}
+
+
+
+showStatus(
+  "Chargement des groupes...",
+  "loading"
+);
+
+loadGroups();
+
+
+
+
+setInterval(() => {
+
+  if (!isTyping && !pendingReservation) {
+    loadGroups();
+  }
+
+}, 3000);
+
+</script>
+
+</body>
+</html>
