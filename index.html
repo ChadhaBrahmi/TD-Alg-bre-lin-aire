@@ -515,10 +515,7 @@ window.receiveGroups = function(data) {
   }
 
 
-  /*
-    Check whether our reservation
-    has appeared in the Sheet.
-  */
+ 
 
   if (pendingReservation) {
 
@@ -559,9 +556,7 @@ window.receiveGroups = function(data) {
 };
 
 
-/*
-  Load the latest Sheet data.
-*/
+
 
 function loadGroups() {
 
@@ -607,9 +602,7 @@ function loadGroups() {
 }
 
 
-/*
-  Create the groups.
-*/
+
 
 function createGroups(data) {
 
@@ -713,9 +706,7 @@ function createGroups(data) {
           name || "";
 
 
-        /*
-          Detect when the user starts typing.
-        */
+       
 
         input.addEventListener(
           "focus",
@@ -811,9 +802,6 @@ function createGroups(data) {
 }
 
 
-/*
-  Register a student.
-*/
 
 function reserveSlot(
   groupIndex,
@@ -840,9 +828,7 @@ function reserveSlot(
   }
 
 
-  /*
-    Remember the reservation.
-  */
+
 
   pendingReservation = {
 
@@ -855,16 +841,12 @@ function reserveSlot(
   };
 
 
-  /*
-    Stop automatic refreshing.
-  */
+
 
   isTyping = false;
 
 
-  /*
-    Disable the controls.
-  */
+ 
 
   input.disabled =
     true;
@@ -882,10 +864,7 @@ function reserveSlot(
   );
 
 
-  /*
-    Send the information
-    to Google Apps Script.
-  */
+ 
 
   formGroup.value =
     currentData[groupIndex].name;
@@ -904,9 +883,7 @@ function reserveSlot(
   submitForm.submit();
 
 
-  /*
-    Wait for Google Sheets to update.
-  */
+
 
   setTimeout(() => {
 
@@ -917,9 +894,7 @@ function reserveSlot(
 }
 
 
-/*
-  Escape HTML.
-*/
+
 
 function escapeHtml(text) {
 
@@ -934,9 +909,7 @@ function escapeHtml(text) {
 }
 
 
-/*
-  Initial load.
-*/
+
 
 showStatus(
   "Chargement des groupes...",
